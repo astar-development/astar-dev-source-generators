@@ -27,7 +27,7 @@ public class StrongIdGenerator : IIncrementalGenerator
         context.RegisterSourceOutput(compilationAndStructs, (spc, source) =>
         {
             (Compilation? compilation, ImmutableArray<RecordDeclarationSyntax> structs) = source;
-            INamedTypeSymbol? strongIdAttrSymbol = compilation.GetTypeByMetadataName("AStar.Dev.Source.Generators.Annotations.StrongIdAttribute");
+            INamedTypeSymbol? strongIdAttrSymbol = compilation.GetTypeByMetadataName("AStar.Dev.Source.Generators.Attributes.StrongIdAttribute");
             Debug.WriteLine($"StrongIdAttribute symbol: {strongIdAttrSymbol?.ToDisplayString()}");
             if(strongIdAttrSymbol == null)
             {

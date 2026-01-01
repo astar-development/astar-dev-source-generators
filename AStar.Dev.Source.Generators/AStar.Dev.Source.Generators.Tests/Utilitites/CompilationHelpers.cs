@@ -7,7 +7,7 @@ namespace AStar.Dev.Source.Generators.Tests.Utilitites;
 internal static class CompilationHelpers
 {
     private const string AttributeSource = @"using System;
-namespace AStar.Dev.Source.Generators.Annotations {
+namespace AStar.Dev.Source.Generators.Attributes {
     public sealed class StrongIdAttribute(Type? idType) : Attribute
     {
         /// <summary>

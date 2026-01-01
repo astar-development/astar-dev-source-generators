@@ -12,7 +12,7 @@ public class StrongIdGeneratorShould
     [Fact]
     public void GeneratePartialStructWithIdPropertyWithTypeOfIntWhenSpecifiedForValidReadonlyRecordStruct()
     {
-        const string input = @"using AStar.Dev.Source.Generators.Annotations;
+        const string input = @"using AStar.Dev.Source.Generators.Attributes;
 namespace TestNamespace
 {
     [StrongId(typeof(int))]
@@ -35,7 +35,7 @@ namespace TestNamespace
     [Fact]
     public void GeneratePartialStructWithIdPropertyWithTypeOfStringWhenSpecifiedForValidReadonlyRecordStruct()
     {
-        const string input = @"using AStar.Dev.Source.Generators.Annotations;
+        const string input = @"using AStar.Dev.Source.Generators.Attributes;
 namespace TestNamespace
 {
     [StrongId(typeof(string))]
@@ -58,7 +58,7 @@ namespace TestNamespace
     [Fact]
     public void GeneratePartialStructWithIdPropertyWithTypeOfGuidWhenSpecifiedForValidReadonlyRecordStruct()
     {
-        const string input = @"using AStar.Dev.Source.Generators.Annotations;
+        const string input = @"using AStar.Dev.Source.Generators.Attributes;
 namespace TestNamespace
 {
     [StrongId(typeof(Guid))]
@@ -81,7 +81,7 @@ namespace TestNamespace
     [Fact]
     public void GeneratePartialStructWithIdPropertyWithDefaultTypeOfGuidWhenNotSpecifiedForValidReadonlyRecordStruct()
     {
-        const string input = @"using AStar.Dev.Source.Generators.Annotations;
+        const string input = @"using AStar.Dev.Source.Generators.Attributes;
 namespace TestNamespace
 {
     [StrongId]
@@ -104,7 +104,7 @@ namespace TestNamespace
     [Fact]
     public void DoesNotGenerate_ForNonReadonlyOrNonRecordStruct()
     {
-        const string input = @"using AStar.Dev.Source.Generators.Annotations;
+        const string input = @"using AStar.Dev.Source.Generators.Attributes;
 namespace TestNamespace
 {
     [StrongId(typeof(int))]

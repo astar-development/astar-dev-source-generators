@@ -40,7 +40,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\AStar.Dev.Source.Generators.Annotations\AStar.Dev.Source.Generators.Attributes.csproj" />
+      <ProjectReference Include="..\..\AStar.Dev.Source.Generators.Attributes\AStar.Dev.Source.Generators.Attributes.csproj" />
     </ItemGroup>
 
 

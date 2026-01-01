@@ -1,6 +1,6 @@
 using System;
 
-namespace AStar.Dev.Source.Generators.Annotations;
+namespace AStar.Dev.Source.Generators.Attributes;
 
 /// <summary>
 /// Indicates that the target is a strong ID type. Intended for use only on readonly record structs.
