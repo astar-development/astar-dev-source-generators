@@ -12,7 +12,9 @@ public class ServiceRegistrationGeneratorShould
     private const string AttributeSource = @"using System;\nnamespace AStar.Dev.Source.Generators.Attributes {\n    public enum ServiceLifetime { Singleton, Scoped, Transient }\n    [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]\n    public sealed class ServiceAttribute : Attribute {\n        public ServiceAttribute(ServiceLifetime lifetime = ServiceLifetime.Scoped) { Lifetime = lifetime; }\n        public ServiceLifetime Lifetime { get; }\n        public Type? As { get; set; }\n        public bool AsSelf { get; set; } = false;\n    }\n}";
 
     private static CSharpCompilation CreateCompilation(string input)
-        => CSharpCompilation.Create("TestAssembly",
+    {
+        var diReference = MetadataReference.CreateFromFile(typeof(Microsoft.Extensions.DependencyInjection.IServiceCollection).Assembly.Location);
+        return CSharpCompilation.Create("TestAssembly",
             [
                 CSharpSyntaxTree.ParseText(AttributeSource),
                 CSharpSyntaxTree.ParseText(input)
@@ -20,14 +22,16 @@ public class ServiceRegistrationGeneratorShould
             [
                 MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(Attribute).Assembly.Location),
-                MetadataReference.CreateFromFile(typeof(System.Runtime.AssemblyTargetedPatchBandAttribute).Assembly.Location)
+                MetadataReference.CreateFromFile(typeof(System.Runtime.AssemblyTargetedPatchBandAttribute).Assembly.Location),
+                diReference
             ],
             new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+    }
 
     [Fact]
     public void RegisterClassWithSingleInterface_DefaultScoped()
     {
-        const string input = @"using AStar.Dev.Source.Generators.Attributes;\npublic interface IFoo {}\n[Service]\npublic class Foo : IFoo {}";
+        const string input = @"namespace TestNamespace { public interface IFoo {} [Service] public class Foo : IFoo {} }";
         CSharpCompilation compilation = CreateCompilation(input);
         var generator = new ServiceRegistrationGenerator();
         var driver = CSharpGeneratorDriver.Create(generator);
@@ -36,13 +40,14 @@ public class ServiceRegistrationGeneratorShould
         GeneratedSourceResult generated = result.Results.SelectMany(r => r.GeneratedSources).FirstOrDefault(x => x.HintName.Contains("ServiceCollectionExtensions"));
         generated.Equals(default(GeneratedSourceResult)).ShouldBeFalse();
         var text = generated.SourceText.ToString();
-        text.ShouldContain("s.AddScoped<IFoo, Foo>();");
+        Console.WriteLine("\n--- GENERATED CODE ---\n" + text + "\n--- END GENERATED CODE ---\n");
+        text.ShouldContain("s.AddScoped<global::TestNamespace.IFoo, global::TestNamespace.Foo>();");
     }
 
     [Fact]
     public void RegisterClassWithSingleInterface_SingletonLifetime()
     {
-        const string input = @"using AStar.Dev.Source.Generators.Attributes;\npublic interface IFoo {}\n[Service(ServiceLifetime.Singleton)]\npublic class Foo : IFoo {}";
+        const string input = @"namespace TestNamespace { public interface IFoo {} [Service(ServiceLifetime.Singleton)] public class Foo : IFoo {} }";
         CSharpCompilation compilation = CreateCompilation(input);
         var generator = new ServiceRegistrationGenerator();
         var driver = CSharpGeneratorDriver.Create(generator);
@@ -51,13 +56,14 @@ public class ServiceRegistrationGeneratorShould
         GeneratedSourceResult generated = result.Results.SelectMany(r => r.GeneratedSources).FirstOrDefault(x => x.HintName.Contains("ServiceCollectionExtensions"));
         generated.Equals(default(GeneratedSourceResult)).ShouldBeFalse();
         var text = generated.SourceText.ToString();
-        text.ShouldContain("s.AddSingleton<IFoo, Foo>();");
+        Console.WriteLine("\n--- GENERATED CODE ---\n" + text + "\n--- END GENERATED CODE ---\n");
+        text.ShouldContain("s.AddSingleton<global::TestNamespace.IFoo, global::TestNamespace.Foo>();");
     }
 
     [Fact]
     public void RegisterClassWithSingleInterface_AsSelfTrue()
     {
-        const string input = @"using AStar.Dev.Source.Generators.Attributes;\npublic interface IFoo {}\n[Service(AsSelf = true)]\npublic class Foo : IFoo {}";
+        const string input = @"namespace TestNamespace { public interface IFoo {} [Service(AsSelf = true)] public class Foo : IFoo {} }";
         CSharpCompilation compilation = CreateCompilation(input);
         var generator = new ServiceRegistrationGenerator();
         var driver = CSharpGeneratorDriver.Create(generator);
@@ -66,14 +72,15 @@ public class ServiceRegistrationGeneratorShould
         GeneratedSourceResult generated = result.Results.SelectMany(r => r.GeneratedSources).FirstOrDefault(x => x.HintName.Contains("ServiceCollectionExtensions"));
         generated.Equals(default(GeneratedSourceResult)).ShouldBeFalse();
         var text = generated.SourceText.ToString();
-        text.ShouldContain("s.AddScoped<IFoo, Foo>();");
-        text.ShouldContain("s.AddScoped<Foo>();");
+        Console.WriteLine("\n--- GENERATED CODE ---\n" + text + "\n--- END GENERATED CODE ---\n");
+        text.ShouldContain("s.AddScoped<global::TestNamespace.IFoo, global::TestNamespace.Foo>();");
+        text.ShouldContain("s.AddScoped<global::TestNamespace.Foo>();");
     }
 
     [Fact]
     public void RegisterClassWithSingleInterface_AsOverride()
     {
-        const string input = @"using AStar.Dev.Source.Generators.Attributes;\npublic interface IFoo {}\npublic interface IBar {}\n[Service(As = typeof(IBar))]\npublic class Foo : IFoo, IBar {}";
+        const string input = @"namespace TestNamespace { public interface IFoo {} public interface IBar {} [Service(As = typeof(IBar))] public class Foo : IFoo, IBar {} }";
         CSharpCompilation compilation = CreateCompilation(input);
         var generator = new ServiceRegistrationGenerator();
         var driver = CSharpGeneratorDriver.Create(generator);
@@ -82,13 +89,14 @@ public class ServiceRegistrationGeneratorShould
         GeneratedSourceResult generated = result.Results.SelectMany(r => r.GeneratedSources).FirstOrDefault(x => x.HintName.Contains("ServiceCollectionExtensions"));
         generated.Equals(default(GeneratedSourceResult)).ShouldBeFalse();
         var text = generated.SourceText.ToString();
-        text.ShouldContain("s.AddScoped<IBar, Foo>();");
+        Console.WriteLine("\n--- GENERATED CODE ---\n" + text + "\n--- END GENERATED CODE ---\n");
+        text.ShouldContain("s.AddScoped<global::TestNamespace.IBar, global::TestNamespace.Foo>();");
     }
 
     [Fact]
     public void RegisterClassWithNoInterface_AsSelfTrue()
     {
-        const string input = @"using AStar.Dev.Source.Generators.Attributes;\n[Service(AsSelf = true)]\npublic class Foo {}";
+        const string input = @"namespace TestNamespace { [Service(AsSelf = true)] public class Foo {} }";
         CSharpCompilation compilation = CreateCompilation(input);
         var generator = new ServiceRegistrationGenerator();
         var driver = CSharpGeneratorDriver.Create(generator);
@@ -97,13 +105,14 @@ public class ServiceRegistrationGeneratorShould
         GeneratedSourceResult generated = result.Results.SelectMany(r => r.GeneratedSources).FirstOrDefault(x => x.HintName.Contains("ServiceCollectionExtensions"));
         generated.Equals(default(GeneratedSourceResult)).ShouldBeFalse();
         var text = generated.SourceText.ToString();
-        text.ShouldContain("s.AddScoped<Foo>();");
+        Console.WriteLine("\n--- GENERATED CODE ---\n" + text + "\n--- END GENERATED CODE ---\n");
+        text.ShouldContain("s.AddScoped<global::TestNamespace.Foo>();");
     }
 
     [Fact]
     public void DoesNotRegisterAbstractOrNonPublicOrGenericClasses()
     {
-        const string input = @"using AStar.Dev.Source.Generators.Attributes;\npublic interface IFoo {}\n[Service] public abstract class AbstractFoo : IFoo {}\n[Service] internal class InternalFoo : IFoo {}\n[Service] public class GenericFoo<T> : IFoo {}";
+        const string input = @"namespace TestNamespace { public interface IFoo {} [Service] public abstract class AbstractFoo : IFoo {} [Service] internal class InternalFoo : IFoo {} [Service] public class GenericFoo<T> : IFoo {} }";
         CSharpCompilation compilation = CreateCompilation(input);
         var generator = new ServiceRegistrationGenerator();
         var driver = CSharpGeneratorDriver.Create(generator);
@@ -112,6 +121,7 @@ public class ServiceRegistrationGeneratorShould
         GeneratedSourceResult generated = result.Results.SelectMany(r => r.GeneratedSources).FirstOrDefault(x => x.HintName.Contains("ServiceCollectionExtensions"));
         generated.Equals(default(GeneratedSourceResult)).ShouldBeFalse();
         var text = generated.SourceText.ToString();
+        Console.WriteLine("\n--- GENERATED CODE ---\n" + text + "\n--- END GENERATED CODE ---\n");
         text.ShouldNotContain("AbstractFoo");
         text.ShouldNotContain("InternalFoo");
         text.ShouldNotContain("GenericFoo");
@@ -120,7 +130,7 @@ public class ServiceRegistrationGeneratorShould
     [Fact]
     public void DoesNotRegisterClassWithoutServiceAttribute()
     {
-        const string input = @"using AStar.Dev.Source.Generators.Attributes;\npublic interface IFoo {}\npublic class Foo : IFoo {}";
+        const string input = @"namespace TestNamespace { public interface IFoo {} public class Foo : IFoo {} }";
         CSharpCompilation compilation = CreateCompilation(input);
         var generator = new ServiceRegistrationGenerator();
         var driver = CSharpGeneratorDriver.Create(generator);
@@ -131,6 +141,7 @@ public class ServiceRegistrationGeneratorShould
         if(!generated.Equals(default(GeneratedSourceResult)))
         {
             var text = generated.SourceText.ToString();
+            Console.WriteLine("\n--- GENERATED CODE ---\n" + text + "\n--- END GENERATED CODE ---\n");
             text.ShouldNotContain("Foo");
         }
     }
@@ -138,7 +149,7 @@ public class ServiceRegistrationGeneratorShould
     [Fact]
     public void DoesNotRegisterClassWithMultipleInterfacesAndNoAsSpecified()
     {
-        const string input = @"using AStar.Dev.Source.Generators.Attributes;\npublic interface IFoo {}\npublic interface IBar {}\n[Service]\npublic class Foo : IFoo, IBar {}";
+        const string input = @"namespace TestNamespace { public interface IFoo {} public interface IBar {} [Service] public class Foo : IFoo, IBar {} }";
         CSharpCompilation compilation = CreateCompilation(input);
         var generator = new ServiceRegistrationGenerator();
         var driver = CSharpGeneratorDriver.Create(generator);
@@ -149,6 +160,7 @@ public class ServiceRegistrationGeneratorShould
         if(!generated.Equals(default(GeneratedSourceResult)))
         {
             var text = generated.SourceText.ToString();
+            Console.WriteLine("\n--- GENERATED CODE ---\n" + text + "\n--- END GENERATED CODE ---\n");
             text.ShouldNotContain("Foo");
         }
     }

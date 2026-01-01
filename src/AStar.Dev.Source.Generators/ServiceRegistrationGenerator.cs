@@ -10,7 +10,7 @@ namespace AStar.Dev.Source.Generators;
 [Generator]
 public sealed class ServiceRegistrationGenerator : IIncrementalGenerator
 {
-    private const string AttrFqn = "AStar.Dev.Source.Generators.Annotations.ServiceAttribute";
+    private const string AttrFqn = "AStar.Dev.Source.Generators.Attributes.ServiceAttribute";
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
@@ -44,7 +44,9 @@ public sealed class ServiceRegistrationGenerator : IIncrementalGenerator
             .Where(static t => t.attr is not null)!;
 
     private static AttributeData? FindServiceAttribute(INamedTypeSymbol symbol) => symbol.GetAttributes()
-            .FirstOrDefault(a => a.AttributeClass?.ToDisplayString() == AttrFqn);
+        .FirstOrDefault(a =>
+            a.AttributeClass?.Name == "ServiceAttribute" ||
+            a.AttributeClass?.ToDisplayString().EndsWith(".ServiceAttribute") == true);
 
     private static IncrementalValuesProvider<ServiceModel?> CreateServiceModelsProvider(
         IncrementalValuesProvider<(INamedTypeSymbol sym, AttributeData? attr)> services) => services
@@ -77,6 +79,10 @@ public sealed class ServiceRegistrationGenerator : IIncrementalGenerator
             INamedTypeSymbol? asType = ExtractAsType(attr);
             var asSelf = ExtractAsSelf(attr);
             INamedTypeSymbol? service = asType ?? InferServiceType(impl);
+
+            // Only skip if no service and not alsoAsSelf
+            if (service is null && !asSelf)
+                return null;
 
             return new ServiceModel(
                 lifetime: lifetime,
