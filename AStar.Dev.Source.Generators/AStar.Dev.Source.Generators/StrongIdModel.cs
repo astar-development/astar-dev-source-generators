@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 
 namespace AStar.Dev.Source.Generators;
 
@@ -10,17 +8,4 @@ internal sealed class StrongIdModel(string? ns, string name, Accessibility acces
     public string Name { get; } = name;
     public Accessibility Accessibility { get; } = accessibility;
     public string UnderlyingTypeDisplay { get; } = underlyingTypeDisplay;
-}
-
-internal sealed class StrongIdModelEqualityComparer : IEqualityComparer<StrongIdModel>
-{
-    public static readonly StrongIdModelEqualityComparer Instance = new();
-
-    public bool Equals(StrongIdModel? x, StrongIdModel? y)
-        => ReferenceEquals(x, y) || (x is not null && y is not null && string.Equals(x.Namespace, y.Namespace, StringComparison.Ordinal) &&
-               string.Equals(x.Name, y.Name, StringComparison.Ordinal) &&
-               string.Equals(x.UnderlyingTypeDisplay, y.UnderlyingTypeDisplay, StringComparison.Ordinal) &&
-               x.Accessibility == y.Accessibility);
-
-    public int GetHashCode(StrongIdModel obj) => (obj.Namespace, obj.Name, obj.UnderlyingTypeDisplay, obj.Accessibility).GetHashCode();
 }
