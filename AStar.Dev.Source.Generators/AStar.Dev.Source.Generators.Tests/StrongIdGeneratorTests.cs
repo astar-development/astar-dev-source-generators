@@ -9,6 +9,15 @@ namespace AStar.Dev.Source.Generators.Tests;
 
 public class StrongIdGeneratorTests
 {
+    private const string AttributeSource = @"using System;
+namespace AStar.Dev.Source.Generators.Annotations {
+    [AttributeUsage(AttributeTargets.Struct, Inherited = false, AllowMultiple = false)]
+    public sealed class StrongIdAttribute : Attribute {
+        public Type IdType { get; }
+        public StrongIdAttribute(Type idType) => IdType = idType ?? throw new ArgumentNullException(nameof(idType));
+    }
+}";
+
     [Fact]
     public void GeneratesPartialStructWithIdProperty_ForValidReadonlyRecordStruct()
     {
@@ -20,14 +29,17 @@ namespace TestNamespace
 }";
 
         var compilation = CSharpCompilation.Create("TestAssembly",
-            [
+            new[]
+            {
+                CSharpSyntaxTree.ParseText(AttributeSource),
                 CSharpSyntaxTree.ParseText(input)
-            ],
-            [
+            },
+            new[]
+            {
                 MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(Attribute).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(System.Runtime.AssemblyTargetedPatchBandAttribute).Assembly.Location)
-            ],
+            },
             new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
         var generator = new StrongIdGenerator();
@@ -53,14 +65,17 @@ namespace TestNamespace
 }";
 
         var compilation = CSharpCompilation.Create("TestAssembly",
-            [
+            new[]
+            {
+                CSharpSyntaxTree.ParseText(AttributeSource),
                 CSharpSyntaxTree.ParseText(input)
-            ],
-            [
+            },
+            new[]
+            {
                 MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(Attribute).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(System.Runtime.AssemblyTargetedPatchBandAttribute).Assembly.Location)
-            ],
+            },
             new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
         var generator = new StrongIdGenerator();
