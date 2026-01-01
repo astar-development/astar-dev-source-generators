@@ -46,7 +46,7 @@ public class StrongIdGenerator : IIncrementalGenerator
                     continue;
 
                 // Use StrongIdModel logic for underlying type
-                var underlyingType = StrongIdModel.CreateUnderlyingTypeFromAttribute(attr);
+                var underlyingType = StrongIdModelExtensions.CreateUnderlyingTypeFromAttribute(attr);
                 var ns = symbol.ContainingNamespace.IsGlobalNamespace ? null : symbol.ContainingNamespace.ToDisplayString();
                 var modelObj = new StrongIdModel(ns, symbol.Name, symbol.DeclaredAccessibility, underlyingType);
                 var code = StrongIdCodeGenerator.Generate(modelObj);
