@@ -1,5 +1,5 @@
 <Solution>
-  <Project Path="AStar.Dev.Source.Generators.Annotations/AStar.Dev.Source.Generators.Attributes.csproj" Id="7159c4f6-d23a-4654-aa9c-d1161fa61467" />
+  <Project Path="AStar.Dev.Source.Generators.Attributes\AStar.Dev.Source.Generators.Attributes.csproj" Type="Classic C#" />
   <Project Path="AStar.Dev.Source.Generators/AStar.Dev.Source.Generators.Sample/AStar.Dev.Source.Generators.Sample.csproj" />
   <Project Path="AStar.Dev.Source.Generators/AStar.Dev.Source.Generators.Tests/AStar.Dev.Source.Generators.Tests.csproj" />
   <Project Path="AStar.Dev.Source.Generators/AStar.Dev.Source.Generators/AStar.Dev.Source.Generators.csproj" />
