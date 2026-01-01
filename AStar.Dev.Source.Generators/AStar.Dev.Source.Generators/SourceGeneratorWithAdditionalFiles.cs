@@ -13,7 +13,7 @@ public class SourceGeneratorWithAdditionalFiles : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        var provider = context.AdditionalTextsProvider
+        IncrementalValueProvider<ImmutableArray<AdditionalText>> provider = context.AdditionalTextsProvider
             .Where(f => Path.GetFileName(f.Path) == "DDD.UbiquitousLanguageRegistry.txt")
             .Collect();
 
@@ -22,7 +22,7 @@ public class SourceGeneratorWithAdditionalFiles : IIncrementalGenerator
 
     private void GenerateCode(SourceProductionContext context, ImmutableArray<AdditionalText> files)
     {
-        foreach (var file in files)
+        foreach (AdditionalText file in files)
         {
             // Get the text of the file.
             var lines = file.GetText(context.CancellationToken)?.ToString().Split('\n');

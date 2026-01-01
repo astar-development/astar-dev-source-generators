@@ -47,18 +47,17 @@ partial class Vector3
 
         // We need to create a compilation with the required source code.
         var compilation = CSharpCompilation.Create(nameof(SourceGeneratorWithAdditionalFilesTests),
-            new[] { CSharpSyntaxTree.ParseText(VectorClassText) },
-            new[]
-            {
+            [CSharpSyntaxTree.ParseText(VectorClassText)],
+            [
                 // To support 'System.Attribute' inheritance, add reference to 'System.Private.CoreLib'.
                 MetadataReference.CreateFromFile(typeof(object).Assembly.Location)
-            });
+            ]);
 
         // Run generators and retrieve all results.
-        var runResult = driver.RunGenerators(compilation).GetRunResult();
+        GeneratorDriverRunResult runResult = driver.RunGenerators(compilation).GetRunResult();
 
         // All generated files can be found in 'RunResults.GeneratedTrees'.
-        var generatedFileSyntax = runResult.GeneratedTrees.Single(t => t.FilePath.EndsWith("Vector3.g.cs"));
+        SyntaxTree generatedFileSyntax = runResult.GeneratedTrees.Single(t => t.FilePath.EndsWith("Vector3.g.cs"));
 
         // Complex generators should be tested using text comparison.
         Assert.Equal(ExpectedGeneratedClassText, generatedFileSyntax.GetText().ToString(),

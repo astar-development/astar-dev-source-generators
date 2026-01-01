@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
@@ -35,7 +36,7 @@ namespace {Namespace}
             SourceText.From(AttributeSourceCode, Encoding.UTF8)));
 
         // Filter classes annotated with the [Report] attribute. Only filtered Syntax Nodes can trigger code generation.
-        var provider = context.SyntaxProvider
+        IncrementalValuesProvider<ClassDeclarationSyntax> provider = context.SyntaxProvider
             .CreateSyntaxProvider(
                 (s, _) => s is ClassDeclarationSyntax,
                 (ctx, _) => GetClassDeclarationForSourceGen(ctx))
@@ -85,10 +86,10 @@ namespace {Namespace}
         ImmutableArray<ClassDeclarationSyntax> classDeclarations)
     {
         // Go through all filtered class declarations.
-        foreach (var classDeclarationSyntax in classDeclarations)
+        foreach (ClassDeclarationSyntax classDeclarationSyntax in classDeclarations)
         {
             // We need to get semantic model of the class to retrieve metadata.
-            var semanticModel = compilation.GetSemanticModel(classDeclarationSyntax.SyntaxTree);
+            SemanticModel semanticModel = compilation.GetSemanticModel(classDeclarationSyntax.SyntaxTree);
 
             // Symbols allow us to get the compile-time information.
             if (semanticModel.GetDeclaredSymbol(classDeclarationSyntax) is not INamedTypeSymbol classSymbol)
@@ -100,7 +101,7 @@ namespace {Namespace}
             var className = classDeclarationSyntax.Identifier.Text;
 
             // Go through all class members with a particular type (property) to generate method lines.
-            var methodBody = classSymbol.GetMembers()
+            IEnumerable<string> methodBody = classSymbol.GetMembers()
                 .OfType<IPropertySymbol>()
                 .Select(p => $@"        yield return $""{p.Name}:{{this.{p.Name}}}"";"); // e.g. yield return $"Id:{this.Id}";
 
