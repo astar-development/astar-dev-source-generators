@@ -29,7 +29,7 @@ namespace TestNamespace
         GeneratedSourceResult generated = allGenerated.FirstOrDefault(x => x.HintName.Contains("MyId"));
         generated.Equals(default(GeneratedSourceResult)).ShouldBeFalse();
         var generatedText = generated.SourceText.ToString();
-        generatedText.ShouldContain(" public readonly partial record struct MyId(int Id)");
+        generatedText.ShouldContain("public readonly partial record struct MyId(System.Int32 Id)");
     }
 
     [Fact]
@@ -52,7 +52,7 @@ namespace TestNamespace
         GeneratedSourceResult generated = allGenerated.FirstOrDefault(x => x.HintName.Contains("MyId"));
         generated.Equals(default(GeneratedSourceResult)).ShouldBeFalse();
         var generatedText = generated.SourceText.ToString();
-        generatedText.ShouldContain(" public readonly partial record struct MyId(string Id)");
+        generatedText.ShouldContain("public readonly partial record struct MyId(System.String Id)");
     }
 
     [Fact]
@@ -75,7 +75,7 @@ namespace TestNamespace
         GeneratedSourceResult generated = allGenerated.FirstOrDefault(x => x.HintName.Contains("MyId"));
         generated.Equals(default(GeneratedSourceResult)).ShouldBeFalse();
         var generatedText = generated.SourceText.ToString();
-        generatedText.ShouldContain(" public readonly partial record struct MyId(Guid Id)");
+        generatedText.ShouldContain("public readonly partial record struct MyId(System.Guid Id)");
     }
 
     [Fact]
@@ -98,7 +98,7 @@ namespace TestNamespace
         GeneratedSourceResult generated = allGenerated.FirstOrDefault(x => x.HintName.Contains("MyId"));
         generated.Equals(default(GeneratedSourceResult)).ShouldBeFalse();
         var generatedText = generated.SourceText.ToString();
-        generatedText.ShouldContain("public readonly partial record struct MyId(global::System.Guid Id)");
+        generatedText.ShouldContain("public readonly partial record struct MyId(System.Guid Id);");
     }
 
     [Fact]

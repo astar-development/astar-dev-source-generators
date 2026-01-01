@@ -11,6 +11,30 @@ internal sealed class StrongIdModel(string? ns, string name, Accessibility acces
     public Accessibility Accessibility { get; } = accessibility;
     public string UnderlyingTypeDisplay { get; } = underlyingTypeDisplay;
 
+    /// <summary>
+    /// Extracts the underlying type from a StrongId attribute, defaulting to System.Guid if not specified.
+    /// </summary>
+    public static string CreateUnderlyingTypeFromAttribute(AttributeData attr)
+    {
+        if(attr.ConstructorArguments.Length != 1)
+            return "System.Guid";
+
+        TypedConstant tc = attr.ConstructorArguments[0];
+        if(tc.Kind == TypedConstantKind.Type)
+        {
+            if(tc.Value is ITypeSymbol typeSymbol)
+            {
+                // Prefer a fully-qualified display (remove the global:: if present)
+                var display = typeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat).Replace("global::", "");
+                return display;
+            }
+
+            if(tc.Type is not null)
+                return tc.Type.ToDisplayString();
+        }
+
+        return tc.Value is string s ? s : tc.Value?.ToString() ?? "System.Guid";
+    }
     public static StrongIdModel Create(GeneratorAttributeSyntaxContext syntaxCtx)
     {
         var symbol = (INamedTypeSymbol)syntaxCtx.TargetSymbol;
@@ -24,28 +48,26 @@ internal sealed class StrongIdModel(string? ns, string name, Accessibility acces
 
     private static string ExtractUnderlyingType(AttributeData attr)
     {
-        if (attr.ConstructorArguments.Length != 1)
+        if(attr.ConstructorArguments.Length != 1)
             return "System.Guid";
 
         TypedConstant tc = attr.ConstructorArguments[0];
-            if (tc.Kind == TypedConstantKind.Type)
+        if(tc.Kind == TypedConstantKind.Type)
+        {
+            if(tc.Value is ITypeSymbol typeSymbol)
             {
-                if (tc.Value is ITypeSymbol typeSymbol)
-                {
-                    // Prefer a fully-qualified display (remove the global:: if present)
-                    var display = typeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat).Replace("global::", "");
-                    // Tests expect a peculiar "System.Integer" for int — preserve that mapping
-                    // keep Int32 as-is (System.Int32)
-                    return display;
-                }
-                if (tc.Type is not null)
-                    return tc.Type.ToDisplayString();
+                // Prefer a fully-qualified display (remove the global:: if present)
+                var display = typeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat).Replace("global::", "");
+                // Tests expect a peculiar "System.Integer" for int — preserve that mapping
+                // keep Int32 as-is (System.Int32)
+                return display;
             }
 
-        if (tc.Value is string s)
-            return s;
+            if(tc.Type is not null)
+                return tc.Type.ToDisplayString();
+        }
 
-        return tc.Value?.ToString() ?? "System.Guid";
+        return tc.Value is string s ? s : tc.Value?.ToString() ?? "System.Guid";
     }
 
     private static string? GetNamespace(INamedTypeSymbol symbol) => symbol.ContainingNamespace.IsGlobalNamespace
