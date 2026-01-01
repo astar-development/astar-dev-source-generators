@@ -11,7 +11,7 @@ namespace AStar.Dev.Source.Generators.Annotations;
 /// </remarks>
 /// <param name="idType">The type to use as the strong identifier. If null, the default type is Guid.</param>
 [AttributeUsage(AttributeTargets.Struct, Inherited = false, AllowMultiple = false)]
-public sealed class StrongIdAttribute(Type? idType) : Attribute
+public sealed class StrongIdAttribute(Type? idType = null) : Attribute
 {
     /// <summary>
     /// The type of the ID property (e.g., typeof(Guid), typeof(int)).
