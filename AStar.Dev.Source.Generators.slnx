@@ -1,6 +1,10 @@
 <Solution>
-  <Project Path="AStar.Dev.Source.Generators.Attributes\AStar.Dev.Source.Generators.Attributes.csproj" Type="Classic C#" />
-  <Project Path="AStar.Dev.Source.Generators/AStar.Dev.Source.Generators.Sample/AStar.Dev.Source.Generators.Sample.csproj" />
-  <Project Path="AStar.Dev.Source.Generators/AStar.Dev.Source.Generators.Tests/AStar.Dev.Source.Generators.Tests.csproj" />
-  <Project Path="AStar.Dev.Source.Generators/AStar.Dev.Source.Generators/AStar.Dev.Source.Generators.csproj" />
+  <Folder Name="/src/">
+    <Project Path="src/AStar.Dev.Source.Generators.Attributes/AStar.Dev.Source.Generators.Attributes.csproj" />
+    <Project Path="src/AStar.Dev.Source.Generators.Sample/AStar.Dev.Source.Generators.Sample.csproj" />
+    <Project Path="src/AStar.Dev.Source.Generators/AStar.Dev.Source.Generators.csproj" />
+  </Folder>
+  <Folder Name="/test/">
+    <Project Path="test/AStar.Dev.Source.Generators.Tests/AStar.Dev.Source.Generators.Tests.csproj" />
+  </Folder>
 </Solution>
