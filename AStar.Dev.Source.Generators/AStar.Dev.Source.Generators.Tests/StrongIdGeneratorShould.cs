@@ -1,5 +1,5 @@
-using System;
 using System.Linq;
+using AStar.Dev.Source.Generators.Tests.Utilitites;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Shouldly;
@@ -9,19 +9,8 @@ namespace AStar.Dev.Source.Generators.Tests;
 
 public class StrongIdGeneratorShould
 {
-    private const string AttributeSource = @"using System;
-namespace AStar.Dev.Source.Generators.Annotations {
-    public sealed class StrongIdAttribute(Type? idType) : Attribute
-    {
-        /// <summary>
-        /// The type of the ID property (e.g., typeof(Guid), typeof(int)).
-        /// </summary>
-        public Type IdType { get; } = idType ?? typeof(Guid);
-    }
-}";
-
     [Fact]
-    public void GeneratePartialStructWithIdPropertyWithTypeIntForValidReadonlyRecordStruct()
+    public void GeneratePartialStructWithIdPropertyWithTypeOfIntWhenSpecifiedForValidReadonlyRecordStruct()
     {
         const string input = @"using AStar.Dev.Source.Generators.Annotations;
 namespace TestNamespace
@@ -30,17 +19,7 @@ namespace TestNamespace
     public readonly partial record struct MyId { }
 }";
 
-        var compilation = CSharpCompilation.Create("TestAssembly",
-            [
-                CSharpSyntaxTree.ParseText(AttributeSource),
-                CSharpSyntaxTree.ParseText(input)
-            ],
-            [
-                MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
-                MetadataReference.CreateFromFile(typeof(Attribute).Assembly.Location),
-                MetadataReference.CreateFromFile(typeof(System.Runtime.AssemblyTargetedPatchBandAttribute).Assembly.Location)
-            ],
-            new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+        CSharpCompilation compilation = CompilationHelpers.CreateCompilation(input);
 
         var generator = new StrongIdGenerator();
         var driver = CSharpGeneratorDriver.Create(generator);
@@ -50,8 +29,76 @@ namespace TestNamespace
         GeneratedSourceResult generated = allGenerated.FirstOrDefault(x => x.HintName.Contains("MyId"));
         generated.Equals(default(GeneratedSourceResult)).ShouldBeFalse();
         var generatedText = generated.SourceText.ToString();
-        generatedText.ShouldContain("public int Id");
-        generatedText.ShouldContain("public readonly partial record struct MyId");
+        generatedText.ShouldContain(" public readonly partial record struct MyId(int Id)");
+    }
+
+    [Fact]
+    public void GeneratePartialStructWithIdPropertyWithTypeOfStringWhenSpecifiedForValidReadonlyRecordStruct()
+    {
+        const string input = @"using AStar.Dev.Source.Generators.Annotations;
+namespace TestNamespace
+{
+    [StrongId(typeof(string))]
+    public readonly partial record struct MyId { }
+}";
+
+        CSharpCompilation compilation = CompilationHelpers.CreateCompilation(input);
+
+        var generator = new StrongIdGenerator();
+        var driver = CSharpGeneratorDriver.Create(generator);
+        driver = (CSharpGeneratorDriver)driver.RunGenerators(compilation);
+        GeneratorDriverRunResult result = driver.GetRunResult();
+        var allGenerated = result.Results.SelectMany(r => r.GeneratedSources).ToList();
+        GeneratedSourceResult generated = allGenerated.FirstOrDefault(x => x.HintName.Contains("MyId"));
+        generated.Equals(default(GeneratedSourceResult)).ShouldBeFalse();
+        var generatedText = generated.SourceText.ToString();
+        generatedText.ShouldContain(" public readonly partial record struct MyId(string Id)");
+    }
+
+    [Fact]
+    public void GeneratePartialStructWithIdPropertyWithTypeOfGuidWhenSpecifiedForValidReadonlyRecordStruct()
+    {
+        const string input = @"using AStar.Dev.Source.Generators.Annotations;
+namespace TestNamespace
+{
+    [StrongId(typeof(Guid))]
+    public readonly partial record struct MyId { }
+}";
+
+        CSharpCompilation compilation = CompilationHelpers.CreateCompilation(input);
+
+        var generator = new StrongIdGenerator();
+        var driver = CSharpGeneratorDriver.Create(generator);
+        driver = (CSharpGeneratorDriver)driver.RunGenerators(compilation);
+        GeneratorDriverRunResult result = driver.GetRunResult();
+        var allGenerated = result.Results.SelectMany(r => r.GeneratedSources).ToList();
+        GeneratedSourceResult generated = allGenerated.FirstOrDefault(x => x.HintName.Contains("MyId"));
+        generated.Equals(default(GeneratedSourceResult)).ShouldBeFalse();
+        var generatedText = generated.SourceText.ToString();
+        generatedText.ShouldContain(" public readonly partial record struct MyId(Guid Id)");
+    }
+
+    [Fact]
+    public void GeneratePartialStructWithIdPropertyWithDefaultTypeOfGuidWhenNotSpecifiedForValidReadonlyRecordStruct()
+    {
+        const string input = @"using AStar.Dev.Source.Generators.Annotations;
+namespace TestNamespace
+{
+    [StrongId]
+    public readonly partial record struct MyId { }
+}";
+
+        CSharpCompilation compilation = CompilationHelpers.CreateCompilation(input);
+
+        var generator = new StrongIdGenerator();
+        var driver = CSharpGeneratorDriver.Create(generator);
+        driver = (CSharpGeneratorDriver)driver.RunGenerators(compilation);
+        GeneratorDriverRunResult result = driver.GetRunResult();
+        var allGenerated = result.Results.SelectMany(r => r.GeneratedSources).ToList();
+        GeneratedSourceResult generated = allGenerated.FirstOrDefault(x => x.HintName.Contains("MyId"));
+        generated.Equals(default(GeneratedSourceResult)).ShouldBeFalse();
+        var generatedText = generated.SourceText.ToString();
+        generatedText.ShouldContain("public readonly partial record struct MyId(global::System.Guid Id)");
     }
 
     [Fact]
@@ -64,17 +111,7 @@ namespace TestNamespace
     public partial struct MyId { }
 }";
 
-        var compilation = CSharpCompilation.Create("TestAssembly",
-            [
-                CSharpSyntaxTree.ParseText(AttributeSource),
-                CSharpSyntaxTree.ParseText(input)
-            ],
-            [
-                MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
-                MetadataReference.CreateFromFile(typeof(Attribute).Assembly.Location),
-                MetadataReference.CreateFromFile(typeof(System.Runtime.AssemblyTargetedPatchBandAttribute).Assembly.Location)
-            ],
-            new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+        CSharpCompilation compilation = CompilationHelpers.CreateCompilation(input);
 
         var generator = new StrongIdGenerator();
         var driver = CSharpGeneratorDriver.Create(generator);

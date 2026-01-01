@@ -46,10 +46,10 @@ public class StrongIdGenerator : IIncrementalGenerator
                 }
 
                 Debug.WriteLine($"Processing struct: {symbol.Name}");
-                foreach(AttributeData attribute in symbol.GetAttributes())
+                foreach(INamedTypeSymbol? attribute in symbol.GetAttributes().Select(s => s.AttributeClass))
                 {
-                    Debug.WriteLine($"  Attribute: {attribute.AttributeClass?.ToDisplayString()}");
-                    Debug.WriteLine($"    SymbolEqualityComparer: {SymbolEqualityComparer.Default.Equals(attribute.AttributeClass, strongIdAttrSymbol)}");
+                    Debug.WriteLine($"  Attribute: {attribute?.ToDisplayString()}");
+                    Debug.WriteLine($"    SymbolEqualityComparer: {SymbolEqualityComparer.Default.Equals(attribute, strongIdAttrSymbol)}");
                 }
 
                 AttributeData? attr = symbol.GetAttributes().FirstOrDefault(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, strongIdAttrSymbol));
@@ -59,17 +59,33 @@ public class StrongIdGenerator : IIncrementalGenerator
                     continue;
                 }
 
-                if(attr.ConstructorArguments.Length != 1)
+                if(attr.ConstructorArguments.Length > 1)
                 {
                     Debug.WriteLine($"  StrongIdAttribute on {symbol.Name} does not have exactly one constructor argument.");
                     continue;
                 }
 
-                TypedConstant idTypeArg = attr.ConstructorArguments[0];
-                if(idTypeArg.Value is not INamedTypeSymbol idTypeSymbol)
+                INamedTypeSymbol idTypeSymbol;
+                if(attr.ConstructorArguments.Length == 0)
                 {
-                    Debug.WriteLine($"  StrongIdAttribute argument is not a type symbol on {symbol.Name}.");
-                    continue;
+                    // Default to Guid if no argument is provided
+                    idTypeSymbol = compilation.GetTypeByMetadataName("System.Guid");
+                    if(idTypeSymbol == null)
+                    {
+                        Debug.WriteLine("  Could not resolve System.Guid.");
+                        continue;
+                    }
+                }
+                else
+                {
+                    TypedConstant idTypeArg = attr.ConstructorArguments[0];
+                    if(idTypeArg.Value is not INamedTypeSymbol idTypeArgSymbol)
+                    {
+                        Debug.WriteLine($"  StrongIdAttribute argument is not a type symbol on {symbol.Name}.");
+                        continue;
+                    }
+
+                    idTypeSymbol = idTypeArgSymbol;
                 }
 
                 var ns = symbol.ContainingNamespace.IsGlobalNamespace ? null : symbol.ContainingNamespace.ToString();
@@ -83,10 +99,8 @@ public class StrongIdGenerator : IIncrementalGenerator
                     _ = sb.AppendLine("{");
                 }
 
-                _ = sb.AppendLine($"    public readonly partial record struct {structName}");
-                _ = sb.AppendLine("    {");
-                _ = sb.AppendLine($"        public {idTypeName} Id {{ get; }}");
-                _ = sb.AppendLine("    }");
+                _ = sb.AppendLine($"    public readonly partial record struct {structName}({idTypeName} Id)");
+
                 if(!string.IsNullOrEmpty(ns))
                     _ = sb.AppendLine("}");
 
