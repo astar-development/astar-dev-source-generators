@@ -5,13 +5,12 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace AStar.Dev.Source.Generators;
+namespace AStar.Dev.Source.Generators.ServiceRegistrationGeneration;
 
 [Generator]
+[System.Diagnostics.CodeAnalysis.SuppressMessage("MicrosoftCodeAnalysisCorrectness", "RS1038:Compiler extensions should be implemented in assemblies with compiler-provided references", Justification = "<Pending>")]
 public sealed class ServiceRegistrationGenerator : IIncrementalGenerator
 {
-    private const string AttrFqn = "AStar.Dev.Source.Generators.Attributes.ServiceAttribute";
-
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         IncrementalValuesProvider<INamedTypeSymbol?> classSyntax = CreateClassSyntaxProvider(context);
@@ -81,10 +80,9 @@ public sealed class ServiceRegistrationGenerator : IIncrementalGenerator
             INamedTypeSymbol? service = asType ?? InferServiceType(impl);
 
             // Only skip if no service and not alsoAsSelf
-            if (service is null && !asSelf)
-                return null;
-
-            return new ServiceModel(
+            return service is null && !asSelf
+                ? null
+                : new ServiceModel(
                 lifetime: lifetime,
                 implFqn: impl.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
                 serviceFqn: service?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),

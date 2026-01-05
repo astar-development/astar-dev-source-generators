@@ -1,11 +1,10 @@
 using System.Linq;
-using AStar.Dev.Source.Generators.Tests.Utilitites;
+using AStar.Dev.Source.Generators.StrongIdCodeGeneration;
+using AStar.Dev.Source.Generators.Tests.Unit.Utilitites;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Shouldly;
-using Xunit;
 
-namespace AStar.Dev.Source.Generators.Tests;
+namespace AStar.Dev.Source.Generators.Tests.Unit.StrongIdCodeGeneration;
 
 public class StrongIdGeneratorShould
 {
@@ -23,7 +22,7 @@ namespace TestNamespace
 
         var generator = new StrongIdGenerator();
         var driver = CSharpGeneratorDriver.Create(generator);
-        driver = (CSharpGeneratorDriver)driver.RunGenerators(compilation);
+        driver = (CSharpGeneratorDriver)driver.RunGenerators(compilation, TestContext.Current.CancellationToken);
         GeneratorDriverRunResult result = driver.GetRunResult();
         var allGenerated = result.Results.SelectMany(r => r.GeneratedSources).ToList();
         GeneratedSourceResult generated = allGenerated.FirstOrDefault(x => x.HintName.Contains("MyId"));
@@ -46,7 +45,7 @@ namespace TestNamespace
 
         var generator = new StrongIdGenerator();
         var driver = CSharpGeneratorDriver.Create(generator);
-        driver = (CSharpGeneratorDriver)driver.RunGenerators(compilation);
+        driver = (CSharpGeneratorDriver)driver.RunGenerators(compilation, TestContext.Current.CancellationToken);
         GeneratorDriverRunResult result = driver.GetRunResult();
         var allGenerated = result.Results.SelectMany(r => r.GeneratedSources).ToList();
         GeneratedSourceResult generated = allGenerated.FirstOrDefault(x => x.HintName.Contains("MyId"));
@@ -69,7 +68,7 @@ namespace TestNamespace
 
         var generator = new StrongIdGenerator();
         var driver = CSharpGeneratorDriver.Create(generator);
-        driver = (CSharpGeneratorDriver)driver.RunGenerators(compilation);
+        driver = (CSharpGeneratorDriver)driver.RunGenerators(compilation, TestContext.Current.CancellationToken);
         GeneratorDriverRunResult result = driver.GetRunResult();
         var allGenerated = result.Results.SelectMany(r => r.GeneratedSources).ToList();
         GeneratedSourceResult generated = allGenerated.FirstOrDefault(x => x.HintName.Contains("MyId"));
@@ -92,7 +91,7 @@ namespace TestNamespace
 
         var generator = new StrongIdGenerator();
         var driver = CSharpGeneratorDriver.Create(generator);
-        driver = (CSharpGeneratorDriver)driver.RunGenerators(compilation);
+        driver = (CSharpGeneratorDriver)driver.RunGenerators(compilation, TestContext.Current.CancellationToken);
         GeneratorDriverRunResult result = driver.GetRunResult();
         var allGenerated = result.Results.SelectMany(r => r.GeneratedSources).ToList();
         GeneratedSourceResult generated = allGenerated.FirstOrDefault(x => x.HintName.Contains("MyId"));
@@ -115,7 +114,7 @@ namespace TestNamespace
 
         var generator = new StrongIdGenerator();
         var driver = CSharpGeneratorDriver.Create(generator);
-        driver = (CSharpGeneratorDriver)driver.RunGenerators(compilation);
+        driver = (CSharpGeneratorDriver)driver.RunGenerators(compilation, TestContext.Current.CancellationToken);
         GeneratorDriverRunResult result = driver.GetRunResult();
         var allGenerated = result.Results.SelectMany(r => r.GeneratedSources).ToList();
         GeneratedSourceResult generated = allGenerated.FirstOrDefault(x => x.HintName.Contains("MyId"));

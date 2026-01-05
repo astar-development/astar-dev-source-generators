@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Linq;
+using AStar.Dev.Source.Generators.ServiceRegistrationGeneration;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Shouldly;
-using Xunit;
 
-namespace AStar.Dev.Source.Generators.Tests;
+namespace AStar.Dev.Source.Generators.Tests.Unit.ServiceRegistrationGeneration;
 
 public class ServiceRegistrationGeneratorShould
 {
@@ -13,7 +12,7 @@ public class ServiceRegistrationGeneratorShould
 
     private static CSharpCompilation CreateCompilation(string input)
     {
-        var diReference = MetadataReference.CreateFromFile(typeof(Microsoft.Extensions.DependencyInjection.IServiceCollection).Assembly.Location);
+        PortableExecutableReference diReference = MetadataReference.CreateFromFile(typeof(Microsoft.Extensions.DependencyInjection.IServiceCollection).Assembly.Location);
         return CSharpCompilation.Create("TestAssembly",
             [
                 CSharpSyntaxTree.ParseText(AttributeSource),
@@ -35,12 +34,12 @@ public class ServiceRegistrationGeneratorShould
         CSharpCompilation compilation = CreateCompilation(input);
         var generator = new ServiceRegistrationGenerator();
         var driver = CSharpGeneratorDriver.Create(generator);
-        driver = (CSharpGeneratorDriver)driver.RunGenerators(compilation);
+        driver = (CSharpGeneratorDriver)driver.RunGenerators(compilation, TestContext.Current.CancellationToken);
         GeneratorDriverRunResult result = driver.GetRunResult();
         GeneratedSourceResult generated = result.Results.SelectMany(r => r.GeneratedSources).FirstOrDefault(x => x.HintName.Contains("ServiceCollectionExtensions"));
         generated.Equals(default(GeneratedSourceResult)).ShouldBeFalse();
         var text = generated.SourceText.ToString();
-        Console.WriteLine("\n--- GENERATED CODE ---\n" + text + "\n--- END GENERATED CODE ---\n");
+
         text.ShouldContain("s.AddScoped<global::TestNamespace.IFoo, global::TestNamespace.Foo>();");
     }
 
@@ -51,12 +50,12 @@ public class ServiceRegistrationGeneratorShould
         CSharpCompilation compilation = CreateCompilation(input);
         var generator = new ServiceRegistrationGenerator();
         var driver = CSharpGeneratorDriver.Create(generator);
-        driver = (CSharpGeneratorDriver)driver.RunGenerators(compilation);
+        driver = (CSharpGeneratorDriver)driver.RunGenerators(compilation, TestContext.Current.CancellationToken);
         GeneratorDriverRunResult result = driver.GetRunResult();
         GeneratedSourceResult generated = result.Results.SelectMany(r => r.GeneratedSources).FirstOrDefault(x => x.HintName.Contains("ServiceCollectionExtensions"));
         generated.Equals(default(GeneratedSourceResult)).ShouldBeFalse();
         var text = generated.SourceText.ToString();
-        Console.WriteLine("\n--- GENERATED CODE ---\n" + text + "\n--- END GENERATED CODE ---\n");
+
         text.ShouldContain("s.AddSingleton<global::TestNamespace.IFoo, global::TestNamespace.Foo>();");
     }
 
@@ -67,12 +66,12 @@ public class ServiceRegistrationGeneratorShould
         CSharpCompilation compilation = CreateCompilation(input);
         var generator = new ServiceRegistrationGenerator();
         var driver = CSharpGeneratorDriver.Create(generator);
-        driver = (CSharpGeneratorDriver)driver.RunGenerators(compilation);
+        driver = (CSharpGeneratorDriver)driver.RunGenerators(compilation, TestContext.Current.CancellationToken);
         GeneratorDriverRunResult result = driver.GetRunResult();
         GeneratedSourceResult generated = result.Results.SelectMany(r => r.GeneratedSources).FirstOrDefault(x => x.HintName.Contains("ServiceCollectionExtensions"));
         generated.Equals(default(GeneratedSourceResult)).ShouldBeFalse();
         var text = generated.SourceText.ToString();
-        Console.WriteLine("\n--- GENERATED CODE ---\n" + text + "\n--- END GENERATED CODE ---\n");
+
         text.ShouldContain("s.AddScoped<global::TestNamespace.IFoo, global::TestNamespace.Foo>();");
         text.ShouldContain("s.AddScoped<global::TestNamespace.Foo>();");
     }
@@ -84,12 +83,12 @@ public class ServiceRegistrationGeneratorShould
         CSharpCompilation compilation = CreateCompilation(input);
         var generator = new ServiceRegistrationGenerator();
         var driver = CSharpGeneratorDriver.Create(generator);
-        driver = (CSharpGeneratorDriver)driver.RunGenerators(compilation);
+        driver = (CSharpGeneratorDriver)driver.RunGenerators(compilation, TestContext.Current.CancellationToken);
         GeneratorDriverRunResult result = driver.GetRunResult();
         GeneratedSourceResult generated = result.Results.SelectMany(r => r.GeneratedSources).FirstOrDefault(x => x.HintName.Contains("ServiceCollectionExtensions"));
         generated.Equals(default(GeneratedSourceResult)).ShouldBeFalse();
         var text = generated.SourceText.ToString();
-        Console.WriteLine("\n--- GENERATED CODE ---\n" + text + "\n--- END GENERATED CODE ---\n");
+
         text.ShouldContain("s.AddScoped<global::TestNamespace.IBar, global::TestNamespace.Foo>();");
     }
 
@@ -100,12 +99,12 @@ public class ServiceRegistrationGeneratorShould
         CSharpCompilation compilation = CreateCompilation(input);
         var generator = new ServiceRegistrationGenerator();
         var driver = CSharpGeneratorDriver.Create(generator);
-        driver = (CSharpGeneratorDriver)driver.RunGenerators(compilation);
+        driver = (CSharpGeneratorDriver)driver.RunGenerators(compilation, TestContext.Current.CancellationToken);
         GeneratorDriverRunResult result = driver.GetRunResult();
         GeneratedSourceResult generated = result.Results.SelectMany(r => r.GeneratedSources).FirstOrDefault(x => x.HintName.Contains("ServiceCollectionExtensions"));
         generated.Equals(default(GeneratedSourceResult)).ShouldBeFalse();
         var text = generated.SourceText.ToString();
-        Console.WriteLine("\n--- GENERATED CODE ---\n" + text + "\n--- END GENERATED CODE ---\n");
+
         text.ShouldContain("s.AddScoped<global::TestNamespace.Foo>();");
     }
 
@@ -116,12 +115,12 @@ public class ServiceRegistrationGeneratorShould
         CSharpCompilation compilation = CreateCompilation(input);
         var generator = new ServiceRegistrationGenerator();
         var driver = CSharpGeneratorDriver.Create(generator);
-        driver = (CSharpGeneratorDriver)driver.RunGenerators(compilation);
+        driver = (CSharpGeneratorDriver)driver.RunGenerators(compilation, TestContext.Current.CancellationToken);
         GeneratorDriverRunResult result = driver.GetRunResult();
         GeneratedSourceResult generated = result.Results.SelectMany(r => r.GeneratedSources).FirstOrDefault(x => x.HintName.Contains("ServiceCollectionExtensions"));
         generated.Equals(default(GeneratedSourceResult)).ShouldBeFalse();
         var text = generated.SourceText.ToString();
-        Console.WriteLine("\n--- GENERATED CODE ---\n" + text + "\n--- END GENERATED CODE ---\n");
+
         text.ShouldNotContain("AbstractFoo");
         text.ShouldNotContain("InternalFoo");
         text.ShouldNotContain("GenericFoo");
@@ -134,14 +133,14 @@ public class ServiceRegistrationGeneratorShould
         CSharpCompilation compilation = CreateCompilation(input);
         var generator = new ServiceRegistrationGenerator();
         var driver = CSharpGeneratorDriver.Create(generator);
-        driver = (CSharpGeneratorDriver)driver.RunGenerators(compilation);
+        driver = (CSharpGeneratorDriver)driver.RunGenerators(compilation, TestContext.Current.CancellationToken);
         GeneratorDriverRunResult result = driver.GetRunResult();
         GeneratedSourceResult generated = result.Results.SelectMany(r => r.GeneratedSources).FirstOrDefault(x => x.HintName.Contains("ServiceCollectionExtensions"));
-        // Should not generate any registration for Foo
+
         if(!generated.Equals(default(GeneratedSourceResult)))
         {
             var text = generated.SourceText.ToString();
-            Console.WriteLine("\n--- GENERATED CODE ---\n" + text + "\n--- END GENERATED CODE ---\n");
+
             text.ShouldNotContain("Foo");
         }
     }
@@ -153,14 +152,14 @@ public class ServiceRegistrationGeneratorShould
         CSharpCompilation compilation = CreateCompilation(input);
         var generator = new ServiceRegistrationGenerator();
         var driver = CSharpGeneratorDriver.Create(generator);
-        driver = (CSharpGeneratorDriver)driver.RunGenerators(compilation);
+        driver = (CSharpGeneratorDriver)driver.RunGenerators(compilation, TestContext.Current.CancellationToken);
         GeneratorDriverRunResult result = driver.GetRunResult();
         GeneratedSourceResult generated = result.Results.SelectMany(r => r.GeneratedSources).FirstOrDefault(x => x.HintName.Contains("ServiceCollectionExtensions"));
-        // Should not generate any registration for Foo
+
         if(!generated.Equals(default(GeneratedSourceResult)))
         {
             var text = generated.SourceText.ToString();
-            Console.WriteLine("\n--- GENERATED CODE ---\n" + text + "\n--- END GENERATED CODE ---\n");
+
             text.ShouldNotContain("Foo");
         }
     }

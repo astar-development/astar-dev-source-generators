@@ -11,7 +11,7 @@ public sealed class ServiceAttribute(ServiceLifetime lifetime = ServiceLifetime.
     public ServiceLifetime Lifetime { get; } = lifetime;
 
     /// <summary>
-    /// Override the service interface to register against. When specified, the concrete type will be registered as this type. Otherwise, the generator will use the service type from the first listed interface.
+    /// Override the service interface to register against. When specified, the concrete type will be registered as this type. Otherwise, the generator will use the first listed interface.
     /// </summary>
     public Type? As { get; set; }
 
