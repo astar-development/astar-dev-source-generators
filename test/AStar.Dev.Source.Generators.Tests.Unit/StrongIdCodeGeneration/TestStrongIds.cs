@@ -7,7 +7,7 @@ namespace AStar.Dev.Source.Generators.Tests.Unit.StrongIdCodeGeneration;
 public readonly partial record struct UserId;
 
 [StrongId(typeof(int))]
-public readonly partial record struct OrderId;
+public readonly partial record struct OrderId2;
 
 [StrongId(typeof(System.Guid))]
 public readonly partial record struct EntityId;
