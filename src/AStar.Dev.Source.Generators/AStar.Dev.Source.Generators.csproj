@@ -15,7 +15,7 @@
         <NoWarn>$(NoWarn);NU5128</NoWarn>
 
         <!-- Package metadata -->
-        <Version>0.1.4</Version>
+        <Version>0.1.5</Version>
         <Authors>AStar Development, Jason Barden</Authors>
         <Company>AStar Development</Company>
         <Description>Source generators and supporting attribute types for AStar.Dev projects.</Description>
@@ -25,8 +25,10 @@
         <RepositoryType>git</RepositoryType>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-        <PackageReleaseNotes>v0.1.4 - Add missing namespace in generated ServiceRegistrations class.
-- Rename ServiceAttribute to AutoRegisterServiceAttribute for clarity</PackageReleaseNotes>
+		<PackageReleaseNotes>
+			v0.1.5 - Update dependencies to latest Roslyn versions.
+			v0.1.4 - Add missing namespace in generated ServiceRegistrations class.
+			- Rename ServiceAttribute to AutoRegisterServiceAttribute for clarity</PackageReleaseNotes>
         <RepositoryBranch>main</RepositoryBranch>
         <Title>AStar Dev Source Generators</Title>
         <PackageReadmeFile>Readme.md</PackageReadmeFile>
