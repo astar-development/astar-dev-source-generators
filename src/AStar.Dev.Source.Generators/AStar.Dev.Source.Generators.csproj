@@ -9,13 +9,13 @@
         <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
         <IsRoslynComponent>true</IsRoslynComponent>
         <PackageId>AStar.Dev.Source.Generators</PackageId>
-        <IncludeReferencedProjects>false</IncludeReferencedProjects>
+        <!-- <IncludeReferencedProjects>true</IncludeReferencedProjects> -->
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <IncludeBuildOutput>false</IncludeBuildOutput>
         <NoWarn>$(NoWarn);NU5128</NoWarn>
 
         <!-- Package metadata -->
-        <Version>0.1.5</Version>
+        <Version>0.1.6</Version>
         <Authors>AStar Development, Jason Barden</Authors>
         <Company>AStar Development</Company>
         <Description>Source generators and supporting attribute types for AStar.Dev projects.</Description>
@@ -26,6 +26,7 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 		<PackageReleaseNotes>
+			v0.1.6 - Fix build and packaging issues.
 			v0.1.5 - Update dependencies to latest Roslyn versions.
 			v0.1.4 - Add missing namespace in generated ServiceRegistrations class.
 			- Rename ServiceAttribute to AutoRegisterServiceAttribute for clarity</PackageReleaseNotes>
@@ -65,7 +66,7 @@
         <None Include="build\AStar.Dev.Source.Generators.props" Pack="true" PackagePath="build" />
     </ItemGroup>
     <ItemGroup>
-      <ProjectReference Include="..\AStar.Dev.Source.Generators.Attributes\AStar.Dev.Source.Generators.Attributes.csproj" />
+      <ProjectReference Include="..\AStar.Dev.Source.Generators.Attributes\AStar.Dev.Source.Generators.Attributes.csproj" PrivateAssets="all" />
     </ItemGroup>
     <ItemGroup>
       <None Update="astar.png">
