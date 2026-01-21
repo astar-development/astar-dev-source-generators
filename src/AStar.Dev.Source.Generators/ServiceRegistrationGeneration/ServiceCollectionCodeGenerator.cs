@@ -32,14 +32,14 @@ internal static class ServiceCollectionCodeGenerator
 
         if(!string.IsNullOrEmpty(model.ServiceFqn))
         {
-            yield return $"        s.{method}<{model.ServiceFqn}, {model.ImplFqn}>();";
+            yield return $"        services.{method}<{model.ServiceFqn}, {model.ImplFqn}>();";
 
             if(model.AlsoAsSelf)
-                yield return $"        s.{method}<{model.ImplFqn}>();";
+                yield return $"        services.{method}<{model.ImplFqn}>();";
         }
         else
         {
-            yield return $"        s.{method}<{model.ImplFqn}>();";
+            yield return $"        services.{method}<{model.ImplFqn}>();";
         }
     }
 
@@ -62,13 +62,13 @@ internal static class ServiceCollectionCodeGenerator
         _ = sb.AppendLine();
         _ = sb.AppendLine("public static class GeneratedServiceCollectionExtensions");
         _ = sb.AppendLine("{");
-        _ = sb.AppendLine("    public static IServiceCollection AddAnnotatedServices(this IServiceCollection s)");
+        _ = sb.AppendLine("    public static IServiceCollection AddAnnotatedServices(this IServiceCollection services)");
         _ = sb.AppendLine("    {");
 
         foreach(var registration in registrations)
             _ = sb.AppendLine(registration);
 
-        _ = sb.AppendLine("        return s;");
+        _ = sb.AppendLine("        return services;");
         _ = sb.AppendLine("    }");
         _ = sb.AppendLine("}");
 
