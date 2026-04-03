@@ -1,7 +1,6 @@
 using AStar.Dev.Source.Generators.Generators.StronglyTypedId;
 using AStar.Dev.Source.Generators.Generators.Tests.Infrastructure;
 using Microsoft.CodeAnalysis;
-using VerifyXunit;
 
 namespace AStar.Dev.Source.Generators.Generators.Tests.StronglyTypedId;
 
