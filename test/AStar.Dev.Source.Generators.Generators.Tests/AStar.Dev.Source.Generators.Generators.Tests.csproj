@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>AStar.Dev.Source.Generators.Generators.Tests</AssemblyName>
+    <IsTestProject>true</IsTestProject>
+    <IsPackable>false</IsPackable>
+    <NoWarn>$(NoWarn);CS0618;NU1608</NoWarn> <!-- Suppress warnings about obsolete APIs in test code -->
+
+    <!-- Verify.SourceGenerators uses snapshot testing — track snapshots in source control -->
+    <ThrowOnMissingSnapshot Condition="'$(CI)' == 'true'">true</ThrowOnMissingSnapshot>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing" />
+    <PackageReference Include="Microsoft.CodeAnalysis.SourceGenerators.Testing" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio"     PrivateAssets="all" />
+    <PackageReference Include="coverlet.collector"            PrivateAssets="all" />
+    <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="Verify.Xunit" />
+    <PackageReference Include="Verify.SourceGenerators" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp"   PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\AStar.Dev.Source.Generators.Abstractions\AStar.Dev.Source.Generators.Abstractions.csproj" />
+    <ProjectReference Include="..\..\src\AStar.Dev.Source.Generators.Generators\AStar.Dev.Source.Generators.Generators.csproj" />
+  </ItemGroup>
+
+  <!--
+    Tell the test host to treat snapshots under Snapshots/ as content
+    so they are accessible at runtime during verify assertions.
+  -->
+  <ItemGroup>
+    <None Update="Snapshots\**\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

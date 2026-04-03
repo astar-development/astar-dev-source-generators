@@ -1,0 +1,39 @@
+<Project>
+
+  <PropertyGroup>
+    <!-- Identity -->
+    <RootNamespace>AStar.Dev.Source.Generators</RootNamespace>
+    <Authors>AStar.Dev</Authors>
+    <Company>AStar.Dev</Company>
+    <Copyright>Copyright © AStar.Dev $([System.DateTime]::Now.Year)</Copyright>
+    <PackageTags>roslyn;source-generator;codegen;di;strongly-typed-id;options</PackageTags>
+    <PackageProjectUrl>https://github.com/astar-dev/AStar.Dev.Source.Generators</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/astar-dev/AStar.Dev.Source.Generators</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+
+    <!-- Version — override per-project or via CI -->
+    <VersionPrefix>1.0.0</VersionPrefix>
+    <VersionSuffix Condition="'$(Configuration)' == 'Debug'">dev</VersionSuffix>
+
+    <!-- Language & runtime -->
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <AnalysisLevel>latest-recommended</AnalysisLevel>
+
+    <!-- Deterministic builds (important for source generators) -->
+    <Deterministic>true</Deterministic>
+    <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
+
+    <!-- Symbol packages -->
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+
+    <!-- Silence the Roslyn generator netstandard2.0 multi-targeting noise -->
+    <NoWarn>$(NoWarn);NU5128</NoWarn>
+  </PropertyGroup>
+
+</Project>

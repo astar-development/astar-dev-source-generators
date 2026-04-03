@@ -1,0 +1,8 @@
+<Project>
+
+  <!-- Collect test results into a single folder for CI artifact upload -->
+  <PropertyGroup Condition="'$(IsTestProject)' == 'true'">
+    <TestResultsDirectory>$(MSBuildThisFileDirectory)artifacts/test-results</TestResultsDirectory>
+  </PropertyGroup>
+
+</Project>

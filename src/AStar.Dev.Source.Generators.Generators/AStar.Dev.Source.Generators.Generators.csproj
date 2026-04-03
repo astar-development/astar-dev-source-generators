@@ -1,0 +1,61 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>AStar.Dev.Source.Generators.Generators</AssemblyName>
+    <PackageId>AStar.Dev.Source.Generators</PackageId>
+    <Description>
+      Roslyn incremental source generators for DI service registration,
+      IOptions&lt;T&gt; configuration, and strongly-typed IDs.
+    </Description>
+
+    <!--
+      Roslyn loads the generator DLL from analyzers/dotnet/cs inside the NuGet
+      package. Setting IncludeBuildOutput=false stops the DLL also going into
+      lib/ (which would be treated as a runtime reference — wrong for generators).
+    -->
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+
+    <!-- Suppress the "no lib/ folder" NuGet warning that IncludeBuildOutput=false triggers -->
+    <NoWarn>$(NoWarn);NU5128</NoWarn>
+
+    <!--
+      Generators must not emit [assembly: ...] attributes that clash with
+      the consumer's compilation — suppress auto-generated AssemblyInfo.
+    -->
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!--
+      Pack the generator DLL into analyzers/dotnet/cs.
+      PrivateAssets=all stops this from flowing to consumers as a runtime dep.
+    -->
+    <None Include="$(OutputPath)\$(AssemblyName).dll"
+          Pack="true"
+          PackagePath="analyzers/dotnet/cs"
+          Visible="false" />
+
+    <!--
+      Also pack the Abstractions DLL so consumers get attributes
+      from a single package reference.
+    -->
+    <None Include="$(OutputPath)\AStar.Dev.Source.Generators.Abstractions.dll"
+          Pack="true"
+          PackagePath="lib/netstandard2.0"
+          Visible="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp"   PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Reference Abstractions so we can read the attribute metadata names -->
+    <ProjectReference Include="..\AStar.Dev.Source.Generators.Abstractions\AStar.Dev.Source.Generators.Abstractions.csproj"
+                      PrivateAssets="all" />
+  </ItemGroup>
+
+</Project>

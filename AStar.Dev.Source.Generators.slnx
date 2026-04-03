@@ -1,12 +1,10 @@
 <Solution>
+  <Folder Name="/build/" />
   <Folder Name="/src/">
-    <Project Path="src/AStar.Dev.Source.Analyzers/AStar.Dev.Source.Analyzers.csproj" />
-    <Project Path="src/AStar.Dev.Source.Generators.Attributes/AStar.Dev.Source.Generators.Attributes.csproj" />
-    <Project Path="src/AStar.Dev.Source.Generators.Sample/AStar.Dev.Source.Generators.Sample.csproj" />
-    <Project Path="src/AStar.Dev.Source.Generators/AStar.Dev.Source.Generators.csproj" />
+    <Project Path="src/AStar.Dev.Source.Generators.Abstractions/AStar.Dev.Source.Generators.Abstractions.csproj" />
+    <Project Path="src/AStar.Dev.Source.Generators.Generators/AStar.Dev.Source.Generators.Generators.csproj" />
   </Folder>
   <Folder Name="/test/">
-    <Project Path="test/AStar.Dev.Source.Generators.Attributes.Tests.Unit/AStar.Dev.Source.Generators.Attributes.Tests.Unit.csproj" />
-    <Project Path="test/AStar.Dev.Source.Generators.Tests.Unit/AStar.Dev.Source.Generators.Tests.Unit.csproj" />
+    <Project Path="test/AStar.Dev.Source.Generators.Generators.Tests/AStar.Dev.Source.Generators.Generators.Tests.csproj" />
   </Folder>
 </Solution>
