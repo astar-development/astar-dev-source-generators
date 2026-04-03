@@ -5,13 +5,12 @@ using VerifyXunit;
 
 namespace AStar.Dev.Source.Generators.Generators.Tests.StronglyTypedId;
 
-[UsesVerify]
 public sealed class StronglyTypedIdGeneratorTests
 {
     // ── Happy path — backing type variants ───────────────────────────────────
 
     [Fact]
-    public Task DefaultGuidBacking_GeneratesFullImplementation()
+    public Task DefaultGuidBackingGeneratesFullImplementation()
     {
         const string source = """
             using AStar.Dev.Source.Generators.Abstractions;
@@ -27,7 +26,7 @@ public sealed class StronglyTypedIdGeneratorTests
     }
 
     [Fact]
-    public Task ExplicitGuidBacking_ProducesIdenticalOutput()
+    public Task ExplicitGuidBackingProducesIdenticalOutput()
     {
         const string source = """
             using AStar.Dev.Source.Generators.Abstractions;
@@ -44,7 +43,7 @@ public sealed class StronglyTypedIdGeneratorTests
     }
 
     [Fact]
-    public Task IntBacking_GeneratesIntImplementation()
+    public Task IntBackingGeneratesIntImplementation()
     {
         const string source = """
             using AStar.Dev.Source.Generators.Abstractions;
@@ -60,7 +59,7 @@ public sealed class StronglyTypedIdGeneratorTests
     }
 
     [Fact]
-    public Task LongBacking_GeneratesLongImplementation()
+    public Task LongBackingGeneratesLongImplementation()
     {
         const string source = """
             using AStar.Dev.Source.Generators.Abstractions;
@@ -76,7 +75,7 @@ public sealed class StronglyTypedIdGeneratorTests
     }
 
     [Fact]
-    public Task StringBacking_GeneratesStringImplementation()
+    public Task StringBackingGeneratesStringImplementation()
     {
         const string source = """
             using AStar.Dev.Source.Generators.Abstractions;
@@ -92,7 +91,7 @@ public sealed class StronglyTypedIdGeneratorTests
     }
 
     [Fact]
-    public Task MultipleIdsInSameNamespace_EachGetsOwnFile()
+    public Task MultipleIdsInSameNamespaceEachGetsOwnFile()
     {
         const string source = """
             using AStar.Dev.Source.Generators.Abstractions;
@@ -120,7 +119,7 @@ public sealed class StronglyTypedIdGeneratorTests
     // ── Diagnostic cases ─────────────────────────────────────────────────────
 
     [Fact]
-    public async Task NotARecordStruct_EmitsDiagnosticASG0020()
+    public async Task NotARecordStructEmitsDiagnosticASG0020()
     {
         const string source = """
             using AStar.Dev.Source.Generators.Abstractions;
@@ -137,7 +136,7 @@ public sealed class StronglyTypedIdGeneratorTests
     }
 
     [Fact]
-    public async Task NotPartial_EmitsDiagnosticASG0020()
+    public async Task NotPartialEmitsDiagnosticASG0020()
     {
         const string source = """
             using AStar.Dev.Source.Generators.Abstractions;
@@ -154,7 +153,7 @@ public sealed class StronglyTypedIdGeneratorTests
     }
 
     [Fact]
-    public async Task UnsupportedBackingType_EmitsDiagnosticASG0021()
+    public async Task UnsupportedBackingTypeEmitsDiagnosticASG0021()
     {
         const string source = """
             using AStar.Dev.Source.Generators.Abstractions;

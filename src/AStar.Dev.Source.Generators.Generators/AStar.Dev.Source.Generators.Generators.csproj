@@ -32,30 +32,26 @@
       Pack the generator DLL into analyzers/dotnet/cs.
       PrivateAssets=all stops this from flowing to consumers as a runtime dep.
     -->
-    <None Include="$(OutputPath)\$(AssemblyName).dll"
-          Pack="true"
-          PackagePath="analyzers/dotnet/cs"
-          Visible="false" />
+    <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
 
     <!--
       Also pack the Abstractions DLL so consumers get attributes
       from a single package reference.
     -->
-    <None Include="$(OutputPath)\AStar.Dev.Source.Generators.Abstractions.dll"
-          Pack="true"
-          PackagePath="lib/netstandard2.0"
-          Visible="false" />
+    <None Include="$(OutputPath)\AStar.Dev.Source.Generators.Abstractions.dll" Pack="true" PackagePath="lib/netstandard2.0" Visible="false" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp"   PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all" />
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+    <PackageReference Include="Microsoft.Extensions.Options" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
   </ItemGroup>
 
   <ItemGroup>
     <!-- Reference Abstractions so we can read the attribute metadata names -->
-    <ProjectReference Include="..\AStar.Dev.Source.Generators.Abstractions\AStar.Dev.Source.Generators.Abstractions.csproj"
-                      PrivateAssets="all" />
+    <ProjectReference Include="..\AStar.Dev.Source.Generators.Abstractions\AStar.Dev.Source.Generators.Abstractions.csproj" PrivateAssets="all" />
   </ItemGroup>
 
 </Project>

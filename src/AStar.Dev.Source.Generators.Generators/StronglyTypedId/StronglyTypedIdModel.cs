@@ -1,29 +1,25 @@
 namespace AStar.Dev.Source.Generators.Generators.StronglyTypedId;
 
 /// <summary>
-/// The primitive type that backs the strongly-typed ID.
-/// Resolved from the <c>typeof(...)</c> argument on <c>[StronglyTypedId]</c>.
-/// </summary>
-internal enum BackingType
-{
-    Guid,
-    Int,
-    Long,
-    String,
-}
-
-/// <summary>
 /// Immutable data extracted from a single <c>[StronglyTypedId]</c> annotation.
 /// One instance → one generated source file.
 /// </summary>
-internal sealed class StronglyTypedIdModel(
-    string Namespace,
-    string StructName,
-    BackingType BackingType,
-    /// <summary>True when EF Core is detected in the compilation references.</summary>
-    bool EmitEfCoreConverter
-)
+internal sealed class StronglyTypedIdModel
 {
+    public StronglyTypedIdModel(string @namespace, string structName, BackingType backingType, bool emitEfCoreConverter)
+    {
+        Namespace = @namespace;
+        StructName = structName;
+        BackingType = backingType;
+        EmitEfCoreConverter = emitEfCoreConverter;
+
+    }
+
+    public string Namespace { get; set; }
+    public string StructName { get;  set; }
+    public BackingType BackingType { get;  set; }
+    public bool EmitEfCoreConverter { get;  set; }
+
     /// <summary>The C# keyword / fully-qualified type name for the backing primitive.</summary>
     internal string BackingTypeName => BackingType switch
     {

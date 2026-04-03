@@ -5,13 +5,12 @@ using VerifyXunit;
 
 namespace AStar.Dev.Source.Generators.Generators.Tests.OptionsConfiguration;
 
-[UsesVerify]
 public sealed class OptionsConfigurationGeneratorTests
 {
     // ── Happy path ───────────────────────────────────────────────────────────
 
     [Fact]
-    public Task SingleOptionsClass_GeneratesConfigureCall()
+    public Task SingleOptionsClassGeneratesConfigureCall()
     {
         const string source = """
             using AStar.Dev.Source.Generators.Abstractions;
@@ -31,7 +30,7 @@ public sealed class OptionsConfigurationGeneratorTests
     }
 
     [Fact]
-    public Task MultipleOptionsClasses_GeneratesSingleExtensionMethod()
+    public Task MultipleOptionsClassesGeneratesSingleExtensionMethod()
     {
         const string source = """
             using AStar.Dev.Source.Generators.Abstractions;
@@ -64,7 +63,7 @@ public sealed class OptionsConfigurationGeneratorTests
     // ── Diagnostic cases ─────────────────────────────────────────────────────
 
     [Fact]
-    public async Task EmptySectionName_EmitsDiagnosticASG0010()
+    public async Task EmptySectionNameEmitsDiagnosticASG0010()
     {
         const string source = """
             using AStar.Dev.Source.Generators.Abstractions;

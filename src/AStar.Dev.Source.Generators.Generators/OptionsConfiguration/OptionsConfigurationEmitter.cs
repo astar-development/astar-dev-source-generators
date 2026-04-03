@@ -12,21 +12,7 @@ internal static class OptionsConfigurationEmitter
         if (models.IsDefaultOrEmpty)
             return;
 
-        // TODO: build source and call:
-        // context.AddSource("OptionsConfigurationExtensions.g.cs", source)
-        //
-        // Emitted shape:
-        //
-        // public static class OptionsConfigurationExtensions
-        // {
-        //     public static IServiceCollection AddGeneratedOptions(
-        //         this IServiceCollection services,
-        //         IConfiguration configuration)
-        //     {
-        //         services.Configure<FooOptions>(configuration.GetSection("Foo"));
-        //         ...
-        //         return services;
-        //     }
-        // }
+        var source = "null";
+        context.AddSource("OptionsConfigurationExtensions.g.cs", source);
     }
 }

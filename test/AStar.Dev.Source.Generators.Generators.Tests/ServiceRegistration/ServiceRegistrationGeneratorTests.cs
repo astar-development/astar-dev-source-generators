@@ -5,13 +5,12 @@ using VerifyXunit;
 
 namespace AStar.Dev.Source.Generators.Generators.Tests.ServiceRegistration;
 
-[UsesVerify]
 public sealed class ServiceRegistrationGeneratorTests
 {
     // ── Happy path ───────────────────────────────────────────────────────────
 
     [Fact]
-    public Task SingleScopedService_GeneratesCorrectExtensionMethod()
+    public Task SingleScopedServiceGeneratesCorrectExtensionMethod()
     {
         const string source = """
             using AStar.Dev.Source.Generators.Abstractions;
@@ -29,7 +28,7 @@ public sealed class ServiceRegistrationGeneratorTests
     }
 
     [Fact]
-    public Task SingletonService_WithNoInterface_RegistersAsConcrete()
+    public Task SingletonServiceWithNoInterfaceRegistersAsConcrete()
     {
         const string source = """
             using AStar.Dev.Source.Generators.Abstractions;
@@ -45,7 +44,7 @@ public sealed class ServiceRegistrationGeneratorTests
     }
 
     [Fact]
-    public Task MultipleServices_AllLifetimes_GeneratesSingleExtensionMethod()
+    public Task MultipleServicesAllLifetimesGeneratesSingleExtensionMethod()
     {
         const string source = """
             using AStar.Dev.Source.Generators.Abstractions;
@@ -73,7 +72,7 @@ public sealed class ServiceRegistrationGeneratorTests
     // ── Diagnostic cases ─────────────────────────────────────────────────────
 
     [Fact]
-    public async Task NonPartialClass_EmitsDiagnosticASG0001()
+    public async Task NonPartialClassEmitsDiagnosticASG0001()
     {
         const string source = """
             using AStar.Dev.Source.Generators.Abstractions;
@@ -94,7 +93,7 @@ public sealed class ServiceRegistrationGeneratorTests
     }
 
     [Fact]
-    public async Task AbstractClass_EmitsDiagnosticASG0002()
+    public async Task AbstractClassEmitsDiagnosticASG0002()
     {
         const string source = """
             using AStar.Dev.Source.Generators.Abstractions;

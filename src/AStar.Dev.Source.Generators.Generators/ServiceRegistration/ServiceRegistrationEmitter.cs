@@ -16,5 +16,10 @@ internal static class ServiceRegistrationEmitter
 
         // TODO: build source via StringBuilder / IndentedTextWriter
         // and call context.AddSource("ServiceCollectionExtensions.g.cs", source)
+        context.AddSource(
+            hintName: $"ServiceCollectionExtensions.g.cs",
+            sourceText: SourceText.From(BuildSource(models), Encoding.UTF8));
     }
+
+    private static string BuildSource(ImmutableArray<ServiceRegistrationModel> models) => throw new NotImplementedException();
 }
